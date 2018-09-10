@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using VolumeControl;
 
 namespace IamGoingToSleep
 {
@@ -13,21 +14,19 @@ namespace IamGoingToSleep
     {
         public static int Minutes { get; set; } = int.Parse(ConfigurationManager.AppSettings["Minutes"]);
 
-        public static int VolumeSkip { get; set; } = Minutes;
-
-        public static int CurrentVolumeSkip { get; set; }
-
         public static int CurrentMinutes { get; set; }
 
         public static int CurrentSeconds { get; set; }
 
         static void Main(string[] args)
         {
+            Volume s = new Volume();
+            //s.SetVolumeNAudio(10);
+            float initialVolumeValue = s.GetVolumeNAudio();
+
             try
             {
-
                 CurrentMinutes = Minutes;
-                CurrentVolumeSkip = VolumeSkip / 2 + CurrentMinutes;
                 Console.WriteLine("Go to sleep :) relax...");
                 while (CurrentMinutes > 0 || CurrentSeconds > 0)
                 {
@@ -42,12 +41,9 @@ namespace IamGoingToSleep
                     Console.Write(string.Format("{0}:{1}", CurrentMinutes.ToString("D2"), CurrentSeconds.ToString("D2")));
                     Thread.Sleep(1000);
 
-
-                    if (--CurrentVolumeSkip == 0)
-                    {
-                        CurrentVolumeSkip = VolumeSkip / 2 + CurrentMinutes;
-                        Volume.VolDown();
-                    }
+                    var scallar = (float)(CurrentMinutes * 60 + CurrentSeconds) / (Minutes * 60);
+                    var volumeScallar = initialVolumeValue * scallar;
+                    s.SetVolumeNAudio(volumeScallar);
                     Console.CursorLeft = 0;
                 }
                 Process.Start("CMD.exe", "/C shutdown /h");
