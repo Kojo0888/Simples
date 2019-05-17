@@ -38,7 +38,7 @@ namespace IamGoingToSleep
                         CurrentSeconds = 60;
                         CurrentMinutes--;
                     }
-
+                    //1
                     CurrentSeconds--;
 
                     Console.Write(string.Format("{0}:{1}", CurrentMinutes.ToString("D2"), CurrentSeconds.ToString("D2")));
