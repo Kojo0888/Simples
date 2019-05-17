@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ namespace IamGoingToSleep
     class Program
     {
         public static int Minutes { get; set; } = int.Parse(ConfigurationManager.AppSettings["Minutes"]);
+
+        public static int AlarmInMinutes { get; set; } = int.Parse(ConfigurationManager.AppSettings["AlarmInMinutes"]);
 
         public static int CurrentMinutes { get; set; }
 
@@ -46,7 +49,31 @@ namespace IamGoingToSleep
                     s.SetVolumeNAudio(volumeScallar);
                     Console.CursorLeft = 0;
                 }
-                Process.Start("CMD.exe", "/C shutdown /h");
+
+                if (AlarmInMinutes > 0)
+                {
+                    while (true)
+                    {
+                        if (CurrentMinutes > AlarmInMinutes)
+                        {
+                            s.SetVolumeNAudio(initialVolumeValue);
+                            SoundPlayer player = new SoundPlayer();
+                            player.SoundLocation = "Alarm.wav";
+                            player.Load();
+                            player.Play();
+                            Console.WriteLine("Alarm!!!");
+                            Thread.Sleep(10000);
+                            break;
+                        }
+
+                        Thread.Sleep(60000);
+                        CurrentMinutes++;
+                    }
+                }
+                else
+                {
+                    Process.Start("CMD.exe", "/C shutdown /h");
+                }
             }
             catch (Exception ex)
             {
