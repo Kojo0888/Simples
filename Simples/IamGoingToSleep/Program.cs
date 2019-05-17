@@ -37,7 +37,7 @@ namespace IamGoingToSleep
                     }
 
                     CurrentSeconds--;
-
+                    //123
                     Console.Write(string.Format("{0}:{1}", CurrentMinutes.ToString("D2"), CurrentSeconds.ToString("D2")));
                     Thread.Sleep(1000);
 
